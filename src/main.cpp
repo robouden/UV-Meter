@@ -1,12 +1,14 @@
-/*
- * test-veml6075.ino
- *
- * Simpel sketch to test if a given board words.
- *
- * Author: Sean Caulfield <sean@yak.net>
- * License: GPLv2.0
- *
- */
+//**************************************************// 
+//    Display for UV meter VEML6075  on M5StickC    //
+//                    V1.0.0                        //
+//   written by Rob Oudendijk                       //
+//     Contact email: rob@yr-design.biz             //
+//          Copyright (c) 2020, YR-Design           //        
+//              All rights reserved.                //
+//**************************************************//
+// M5Stck info on https://github.com/m5stack/M5StickC/blob/master/README.md
+// M5Stick-C SCL=G26 SDA=G0
+
 
 
 #include <VEML6075.h>
@@ -31,7 +33,7 @@ void setup() {
   M5.Lcd.setTextColor(WHITE);
   M5.Lcd.setTextSize(2);
   M5.Lcd.setCursor(10, 20);
-  M5.Lcd.println("IR temp");
+  M5.Lcd.println("UV meter");
   M5.Lcd.setCursor(10, 30);
   M5.Lcd.setTextSize(1);
     if (!veml6075.begin()) {
