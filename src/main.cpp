@@ -20,10 +20,15 @@
 
 VEML6075 veml6075 = VEML6075();
 bool found = false;
+//Setup max values 
+float UVA_Max=0;
+float UVB_Max=0;
+float UVIN_Max=0;
 
 
 void setup() {
   delay(1000);
+// start serials
   M5.begin();
   Wire.begin(0,26);
   Serial.begin(9600);
@@ -37,7 +42,6 @@ void setup() {
   M5.Lcd.setCursor(10, 30);
   M5.Lcd.setTextSize(1);
     if (!veml6075.begin()) {
-    // Serial.println(F("VEML6075 not found!"));
     M5.Lcd.println("VEML6075 not found!");
   } else {
     found = true;
