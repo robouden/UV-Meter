@@ -1,6 +1,6 @@
 //**************************************************// 
 //    Display for UV meter VEML6075  on M5StickC    //
-//                    V1.0.0                        //
+//                    V1.0.01                        //
 //   written by Rob Oudendijk                       //
 //     Contact email: rob@yr-design.biz             //
 //          Copyright (c) 2020, YR-Design           //        
@@ -8,11 +8,11 @@
 //**************************************************//
 // M5Stck info on https://github.com/m5stack/M5StickC/blob/master/README.md
 // M5Stick-C SCL=G26 SDA=G0
-
-
+// 2020-06-18 V1.0.1 Added code for BME280
 
 #include <VEML6075.h>
 #include <M5StickC.h>
+#include <BME280I2C.h>
 
 #ifndef max
 #define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -25,13 +25,83 @@ float UVA_Max=0;
 float UVB_Max=0;
 float UVIN_Max=0;
 
+//setup BME280
+BME280I2C::Settings settings(
+   BME280::OSR_X1,
+   BME280::OSR_X1,
+   BME280::OSR_X1,
+   BME280::Mode_Forced,
+   BME280::StandbyTime_1000ms,
+   BME280::Filter_Off,
+   BME280::SpiEnable_False,
+   BME280I2C::I2CAddr_0x76 // I2C address. I2C specific.
+);
 
-void setup() {
+BME280I2C bme(settings);
+
+
+void printBME280Data
+(
+   Stream* client
+)
+{
+   float temp(NAN), hum(NAN), pres(NAN);
+
+   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
+   BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+
+   bme.read(pres, temp, hum, tempUnit, presUnit);
+
+   client->print("Temp: ");
+   client->print(temp);
+   client->print("°"+ String(tempUnit == BME280::TempUnit_Celsius ? 'C' :'F'));
+   client->print("\t\tHumidity: ");
+   client->print(hum);
+   client->print("% RH");
+   client->print("\t\tPressure: ");
+   client->print(pres);
+   client->println("Pa");
+
+   delay(1000);
+}
+
+void setup() 
+{
   delay(1000);
+
+//setup BME280
+  Wire.begin(0,26);
+  while(!bme.begin())
+  {
+    Serial.println("Could not find BME280I2C sensor!");
+    delay(1000);
+  }
+
+  switch(bme.chipModel())
+  {
+     case BME280::ChipModel_BME280:
+       Serial.println("Found BME280 sensor! Success.");
+       break;
+     case BME280::ChipModel_BMP280:
+       Serial.println("Found BMP280 sensor! No Humidity available.");
+       break;
+     default:
+       Serial.println("Found UNKNOWN sensor! Error!");
+  }
+
+// Change some settings before using BME280
+settings.tempOSR = BME280::OSR_X4;
+
+bme.setSettings(settings);
+
 // start serials
   M5.begin();
   Wire.begin(0,26);
   Serial.begin(9600);
+  
+//setup pins
+  // pinMode(10, OUTPUT);//led
+  pinMode(37, INPUT);//button
 
 //OLED setup and startup display
   M5.Lcd.setRotation(3);
@@ -50,15 +120,22 @@ void setup() {
   M5.Lcd.print("YR-Design ");
   M5.Lcd.setTextColor(ORANGE);
   M5.Lcd.print("2020");
-
+  //switch LED on 
+  digitalWrite(10, LOW);
 
   delay(2000);
   //clear the screen
     M5.Lcd.fillRect(0,0,160,80,BLACK);
     M5.Lcd.setTextColor(WHITE);
+
+  //switch LED off
+    digitalWrite(10, LOW);
 }
 
 void loop() {
+    if (M5.BtnA.wasReleasefor(2000)) { 
+      
+    }
 
   if (found) {
     float value;
@@ -115,5 +192,11 @@ void loop() {
     M5.Lcd.print("2020");
     M5.Lcd.setTextSize(2);
   }
+
+  // serial rpint BME data.
+     printBME280Data(&Serial);
+
+  //wait
     delay(1000);
 }
+
