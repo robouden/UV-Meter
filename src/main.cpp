@@ -1,6 +1,6 @@
 //**************************************************// 
 //    Display for UV meter VEML6075  on M5StickC    //
-//                    V1.0.01                        //
+//                    V1.0.1                        //
 //   written by Rob Oudendijk                       //
 //     Contact email: rob@yr-design.biz             //
 //          Copyright (c) 2020, YR-Design           //        
