@@ -9,6 +9,7 @@
 // M5Stck info on https://github.com/m5stack/M5StickC/blob/master/README.md
 // M5Stick-C SCL=G26 SDA=G0
 // 2020-06-18 V1.0.1 Added code for BME280
+// 2020-07-25 V1.0.2 Added Max values
 
 #include <VEML6075.h>
 #include <M5StickC.h>
@@ -26,6 +27,7 @@ float UVB_Max=0;
 float UVIN_Max=0;
 float TEMP_Max=0;
 float HUM_Max=0;
+String version="1.0.2";
 
 //setup BME280
 BME280I2C::Settings settings(
@@ -130,7 +132,11 @@ bme.setSettings(settings);
   M5.Lcd.setTextColor(WHITE);
   M5.Lcd.setTextSize(2);
   M5.Lcd.setCursor(10, 20);
-  M5.Lcd.println("UV meter");
+  M5.Lcd.print("UV meter");
+  M5.Lcd.setCursor(10, 40);
+  M5.Lcd.setTextSize(1);
+  M5.Lcd.print("Version ");
+  M5.Lcd.print(version);
   M5.Lcd.setCursor(10, 30);
   M5.Lcd.setTextSize(1);
     if (!veml6075.begin()) {
@@ -138,6 +144,7 @@ bme.setSettings(settings);
   } else {
     found = true;
   }
+
   M5.Lcd.setCursor(70, 70);
   M5.Lcd.print("YR-Design ");
   M5.Lcd.setTextColor(ORANGE);
