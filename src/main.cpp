@@ -24,6 +24,8 @@ bool found = false;
 float UVA_Max=0;
 float UVB_Max=0;
 float UVIN_Max=0;
+float TEMP_Max=0;
+float HUM_Max=0;
 
 //setup BME280
 BME280I2C::Settings settings(
@@ -54,9 +56,29 @@ void printBME280Data
 
    client->print("Temp: ");
    client->print(temp);
+       if (temp >TEMP_Max) {
+      TEMP_Max = temp;
+    }
+      M5.Lcd.setTextSize(1);
+      M5.Lcd.setTextColor(WHITE);
+      M5.Lcd.setCursor(0, 50);
+      M5.Lcd.print("Temp=");
+      M5.Lcd.print(temp);
+      M5.Lcd.setCursor(0, 60);
+      M5.Lcd.print("max =");
+      M5.Lcd.print(TEMP_Max);
    client->print("°"+ String(tempUnit == BME280::TempUnit_Celsius ? 'C' :'F'));
    client->print("\t\tHumidity: ");
    client->print(hum);
+          if (hum >HUM_Max) {
+      HUM_Max = hum;
+    }
+      M5.Lcd.setCursor(70, 50);
+      M5.Lcd.print("Hum =");
+      M5.Lcd.print(hum);
+      M5.Lcd.setCursor(70, 60);
+      M5.Lcd.print("max=");
+      M5.Lcd.print(HUM_Max);
    client->print("% RH");
    client->print("\t\tPressure: ");
    client->print(pres);
@@ -139,7 +161,7 @@ void loop() {
 
   if (found) {
     float value;
-  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextSize(1);
     // Poll sensor
     veml6075.poll();
 
@@ -154,28 +176,50 @@ void loop() {
 
 //UVA print
     value = veml6075.getUVA();
+    if (value >UVA_Max) {
+      UVA_Max = value;
+    }
     Serial.print(F("UVA = "));
     Serial.println(value, 2);
+    Serial.print(F("UVAMax = "));
+    Serial.println(UVA_Max, 2);
 
     M5.Lcd.print(F("UVA ="));
     M5.Lcd.println(value);
+    M5.Lcd.print(F("max ="));
+    M5.Lcd.println(UVB_Max);
     // M5.Lcd.print("C");
 
 //UVB print
     value = veml6075.getUVB();
+    if (value >UVB_Max) {
+      UVB_Max = value;
+    }
     Serial.print(F("UVB = "));
     Serial.println(value, 2);
+    Serial.print(F("UVBMax = "));
+    Serial.println(UVB_Max, 2);
+
 
     M5.Lcd.print(F("UVB ="));
     M5.Lcd.println(value);
+    M5.Lcd.print(F("max="));
+    M5.Lcd.println(UVB_Max);
 
 //UV index print
     value = veml6075.getUVIndex();
+        if (value >UVIN_Max) {
+      UVIN_Max = value;
+    }
     Serial.print(F("UV Index ="));
     Serial.println(value, 1);
+    Serial.print(F("UVINMax = "));
+    Serial.println(UVIN_Max, 2);
 
-    M5.Lcd.print(F("UVIND ="));
+    M5.Lcd.print(F("UV-Index="));
     M5.Lcd.println(value);
+    M5.Lcd.print(F("max="));
+    M5.Lcd.println(UVIN_Max);
 
 //Device ID print
     uint16_t devid = veml6075.getDevID();
