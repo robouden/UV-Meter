@@ -75,10 +75,10 @@ void printBME280Data
           if (hum >HUM_Max) {
       HUM_Max = hum;
     }
-      M5.Lcd.setCursor(70, 50);
-      M5.Lcd.print("Hum =");
+      M5.Lcd.setCursor(75, 50);
+      M5.Lcd.print("Hum=");
       M5.Lcd.print(hum);
-      M5.Lcd.setCursor(70, 60);
+      M5.Lcd.setCursor(75, 60);
       M5.Lcd.print("max=");
       M5.Lcd.print(HUM_Max);
    client->print("% RH");
@@ -210,7 +210,7 @@ void loop() {
 
     M5.Lcd.print(F("UVB ="));
     M5.Lcd.println(value);
-    M5.Lcd.print(F("max="));
+    M5.Lcd.print(F("max ="));
     M5.Lcd.println(UVB_Max);
 
 //UV index print
@@ -218,21 +218,20 @@ void loop() {
         if (value >UVIN_Max) {
       UVIN_Max = value;
     }
-    Serial.print(F("UV Index ="));
+    Serial.print(F("UVIN="));
     Serial.println(value, 1);
     Serial.print(F("UVINMax = "));
     Serial.println(UVIN_Max, 2);
 
-    M5.Lcd.print(F("UV-Index="));
+    M5.Lcd.print(F("UVIN="));
     M5.Lcd.println(value);
-    M5.Lcd.print(F("max="));
+    M5.Lcd.print(F("max ="));
     M5.Lcd.println(UVIN_Max);
 
 //Device ID print
     uint16_t devid = veml6075.getDevID();
     Serial.print(F("ID ="));
     Serial.println(devid, HEX);
-
     Serial.println(F("----------------"));
 
 //copy right print
