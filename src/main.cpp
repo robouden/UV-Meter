@@ -27,7 +27,7 @@ float UVB_Max=0;
 float UVIN_Max=0;
 float TEMP_Max=0;
 float HUM_Max=0;
-String version="1.0.2";
+String version="1.0.3";
 
 //setup BME280
 BME280I2C::Settings settings(
@@ -130,9 +130,9 @@ bme.setSettings(settings);
 //OLED setup and startup display
   M5.Lcd.setRotation(3);
   M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextSize(1);
   M5.Lcd.setCursor(10, 20);
-  M5.Lcd.print("UV meter");
+  M5.Lcd.print("UV/Temp/Hum meter");
   M5.Lcd.setCursor(10, 40);
   M5.Lcd.setTextSize(1);
   M5.Lcd.print("Version ");
