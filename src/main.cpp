@@ -27,7 +27,9 @@ float UVB_Max=0;
 float UVIN_Max=0;
 float TEMP_Max=0;
 float HUM_Max=0;
-String version="1.0.3";
+float Volage=0;
+
+String version="1.0.4";
 
 //setup BME280
 BME280I2C::Settings settings(
