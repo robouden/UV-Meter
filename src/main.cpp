@@ -15,10 +15,11 @@
 #include <M5StickC.h>
 #include <BME280I2C.h>
 
-#ifndef max
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+
+
+// Adafruit_VEML6075 veml6075 = Adafruit_VEML6075();
 VEML6075 veml6075 = VEML6075();
 bool found = false;
 //Setup max values 
@@ -28,6 +29,9 @@ float UVIN_Max=0;
 float TEMP_Max=0;
 float HUM_Max=0;
 float Volage=0;
+byte voltPin = 26; //assigns the voltage input pin
+int readValue; //value received from the voltPin
+float voltage; //declare the voltage variable
 
 String version="1.0.4";
 
@@ -90,10 +94,13 @@ void printBME280Data
 
    delay(1000);
 }
-
+// -----------------------------------------------------------------------------------------------------------------
 void setup() 
 {
   delay(1000);
+
+//setup battery measure pins
+  pinMode(voltPin, INPUT); //input variable dc voltage
 
 //setup BME280
   Wire.begin(0,26);
@@ -163,9 +170,10 @@ bme.setSettings(settings);
     digitalWrite(10, LOW);
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+
 void loop() {
-    if (M5.BtnA.wasReleasefor(2000)) { 
-      
+    if (M5.BtnA.wasReleasefor(2000)) {  
     }
 
   if (found) {
@@ -178,6 +186,12 @@ void loop() {
     M5.Lcd.setCursor(0, 0);
     M5.Lcd.setTextColor(WHITE);
 
+// read voltage
+  // int readValue = analogRead(voltPin); //read pin A0 value
+int batteryLevel = map(analogRead(voltPin), 0.0f, 4095.0f, 0, 100);
+Serial.print ("batteryLevel =");
+Serial.println (batteryLevel);
+  // voltage = readValue * (4.2*10 / 1023.0); //calculates real world voltage (10 times is the devider setup)
 
 // time print
     Serial.print(F("t = "));
@@ -236,6 +250,14 @@ void loop() {
     Serial.println(devid, HEX);
     Serial.println(F("----------------"));
 
+//Print Battery level
+    M5.Lcd.setTextSize(1);
+    M5.Lcd.setCursor(125, 0);
+    // M5.Lcd.print("Bat=");
+    M5.Lcd.print(batteryLevel);
+    M5.Lcd.print("%");
+    M5.Lcd.setTextColor(ORANGE);
+
 //copy right print
     M5.Lcd.setTextSize(1);
     M5.Lcd.setCursor(60, 70);
@@ -251,4 +273,5 @@ void loop() {
   //wait
     delay(1000);
 }
+
 
